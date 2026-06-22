@@ -2,9 +2,19 @@ import React, { useState } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Footer from './components/Footer';
-import { Star, Truck, MapPin, Sparkles, MessageCircle } from 'lucide-react';
+import { Star, Truck, MapPin, Sparkles, MessageCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function App() {
+  const [activeTestimonial, setActiveTestimonial] = useState(0);
+
+  const handlePrevTestimonial = () => {
+    setActiveTestimonial((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
+  };
+
+  const handleNextTestimonial = () => {
+    setActiveTestimonial((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
+  };
+
   // Lists of products for display
   const mates = [
     {
@@ -295,7 +305,8 @@ export default function App() {
               <p>Conocé la opinión de quienes nos eligen todos los días para acompañar sus cebadas.</p>
             </div>
 
-            <div className="testimonials-grid">
+            {/* DESKTOP VIEW: FULL GRID */}
+            <div className="testimonials-grid desktop-only">
               {testimonials.map((t, idx) => (
                 <div key={idx} className="testimonial-card">
                   <div>
@@ -315,6 +326,58 @@ export default function App() {
                   </div>
                 </div>
               ))}
+            </div>
+
+            {/* MOBILE VIEW: CAROUSEL WITH ARROWS */}
+            <div className="testimonials-carousel-mobile mobile-only">
+              <div className="testimonial-carousel-container">
+                <div className="testimonial-card">
+                  <div>
+                    <div className="stars-row">
+                      {[...Array(testimonials[activeTestimonial].stars)].map((_, i) => (
+                        <Star key={i} size={14} fill="var(--c-text-dark)" stroke="var(--c-text-dark)" />
+                      ))}
+                    </div>
+                    <p className="testimonial-text" style={{ minHeight: '80px' }}>"{testimonials[activeTestimonial].text}"</p>
+                  </div>
+                  <div className="testimonial-author">
+                    <div className="author-avatar">{testimonials[activeTestimonial].avatar}</div>
+                    <div className="author-info">
+                      <span className="author-name">{testimonials[activeTestimonial].name}</span>
+                      <span className="author-city">{testimonials[activeTestimonial].city}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Carousel Controls */}
+                <div className="carousel-controls">
+                  <button 
+                    onClick={handlePrevTestimonial} 
+                    className="carousel-arrow-btn" 
+                    aria-label="Testimonio anterior"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+                  
+                  <div className="carousel-indicators">
+                    {testimonials.map((_, i) => (
+                      <span 
+                        key={i} 
+                        className={`indicator-dot ${activeTestimonial === i ? 'active' : ''}`}
+                        onClick={() => setActiveTestimonial(i)}
+                      />
+                    ))}
+                  </div>
+                  
+                  <button 
+                    onClick={handleNextTestimonial} 
+                    className="carousel-arrow-btn" 
+                    aria-label="Siguiente testimonio"
+                  >
+                    <ChevronRight size={20} />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </section>
